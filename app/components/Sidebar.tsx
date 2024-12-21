@@ -1,7 +1,7 @@
 'use client'
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import {  MdHelpOutline, MdOutlineEco } from "react-icons/md";
+import {  MdHelpOutline} from "react-icons/md";
 import { RiDashboard3Line , RiBookReadFill, RiSettingsLine} from "react-icons/ri";
 import { AiOutlinePieChart } from "react-icons/ai";
 import { LuBookMarked } from "react-icons/lu";

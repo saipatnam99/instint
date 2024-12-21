@@ -15,11 +15,11 @@ const AddStudent = () => {
   });
 
   const cohorts = ["AY 2022-2023", "AY 2023-2024", "AY 2024-2025"];
-  const coursesWithImages = [
-    { name: "CBSE 9 Science", image: "/images/science.png" },
-    { name: "CBSE 9 Math", image: "/images/math.png" },
-    { name: "CBSE 9 English", image: "/images/english.png" },
-  ];
+  // const coursesWithImages = [
+  //   { name: "CBSE 9 Science", image: "/images/science.png" },
+  //   { name: "CBSE 9 Math", image: "/images/math.png" },
+  //   { name: "CBSE 9 English", image: "/images/english.png" },
+  // ];
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
