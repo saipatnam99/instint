@@ -29,22 +29,34 @@ export async function POST(req: NextRequest) {
   return NextResponse.json(data, { status: 201 });
 }
 
-// PUT: Update a student
 export async function PUT(req: NextRequest) {
   const body = await req.json();
-  const { id, name, cohort, course, dateJoined, lastLogin, status } = body;
+  const {  name, cohort, course, dateJoined, lastLogin, status } = body;
 
-  if (!id) {
+  // Check for required fields
+  if (!name || !cohort || !course || !dateJoined || !lastLogin || status === undefined) {
     return NextResponse.json(
-      { error: 'Student ID is required for update' },
+      { error: 'All fields are required' },
       { status: 400 }
     );
   }
 
+  // Fetch existing student to ensure it exists
+  const { data: existingStudent, error: fetchError } = await supabase
+    .from('students')
+    .select('id')
+    
+    .single();
+
+  if (fetchError || !existingStudent) {
+    return NextResponse.json({ error: 'Student not found' }, { status: 404 });
+  }
+
+  // Update the student
   const { data, error } = await supabase
     .from('students')
     .update({ name, cohort, course, dateJoined, lastLogin, status })
-    .eq('id', id);
+    
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -52,6 +64,7 @@ export async function PUT(req: NextRequest) {
 
   return NextResponse.json(data, { status: 200 });
 }
+
 
 // DELETE: Remove a student
 export async function DELETE(req: NextRequest) {
