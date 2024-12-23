@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 const EditStudent = () => {
-  const { id } = useParams(); // Get the dynamic route parameter 'id'
+  const { id } = useParams(); // Dynamic route parameter
   const router = useRouter();
   const [form, setForm] = useState({
     name: "",
@@ -16,13 +17,22 @@ const EditStudent = () => {
   });
 
   const cohorts = ["AY 2022-2023", "AY 2023-2024", "AY 2024-2025"];
+  const courses = ["CBSE 9 MATHS", "CBSE 9 SCIENCE","CBSE 8 MATHS", "CBSE 8 SCIENCE"]; // Example course list
 
   useEffect(() => {
     if (id) {
       const fetchStudentData = async () => {
-        const res = await fetch(`/api/students?id=${id}`);
-        const data = await res.json();
-        setForm(data); // Populate the form with student data
+        const { data, error } = await supabase
+          .from("students")
+          .select("*")
+          .eq("id", id)
+          .single();
+
+        if (error) {
+          alert("Error fetching student data");
+          return;
+        }
+        setForm(data);
       };
       fetchStudentData();
     }
@@ -36,21 +46,25 @@ const EditStudent = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const res = await fetch(`/api/students/`, {
-      method: "PUT", // Update request
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(form),
-    });
+    const { data, error } = await supabase
+      .from("students")
+      .update({
+        name: form.name,
+        cohort: form.cohort,
+        course: form.course,
+        dateJoined: form.dateJoined,
+        lastLogin: form.lastLogin,
+        status: form.status,
+      })
+      .eq("id", id);
 
-    if (res.ok) {
-      alert("Student updated successfully!");
-      router.push("/"); // Redirect to the dashboard
-    } else {
-      const errorData = await res.json();
-      alert(`Error: ${errorData.error}`);
+    if (error) {
+      alert(`Error updating student: ${error.message}`);
+      return;
     }
+
+    alert("Student updated successfully!");
+    router.push("/"); // Redirect to the dashboard
   };
 
   return (
@@ -68,8 +82,6 @@ const EditStudent = () => {
             required
           />
         </div>
-
-        {/* Cohort */}
         <div className="mb-4">
           <label className="block text-gray-700">Cohort</label>
           <select
@@ -87,17 +99,22 @@ const EditStudent = () => {
             ))}
           </select>
         </div>
-
         <div className="mb-4">
           <label className="block text-gray-700">Course</label>
-          <input
-            type="text"
+          <select
             name="course"
             className="w-full border p-2 rounded"
             value={form.course}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">Select Course</option>
+            {courses.map((course) => (
+              <option key={course} value={course}>
+                {course}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mb-4">
           <label className="block text-gray-700">Date Joined</label>
@@ -126,7 +143,7 @@ const EditStudent = () => {
           <select
             name="status"
             className="w-full border p-2 rounded"
-            value={form.status ? "true" : "false"} // Ensures boolean mapping to string "true" or "false"
+            value={form.status ? "true" : "false"}
             onChange={handleChange}
           >
             <option value="true">Active</option>

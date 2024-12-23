@@ -114,7 +114,7 @@ const StudentDashboard = () => {
             </div>
             <div className="flex items-center space-x-2">
               <img
-                src="https://via.placeholder.com/150"
+                src="/profile.avif"
                 alt="Profile"
                 className="w-8 h-8 rounded-full object-cover"
               />

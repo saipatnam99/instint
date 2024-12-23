@@ -15,25 +15,23 @@ const AddStudent = () => {
   });
 
   const cohorts = ["AY 2022-2023", "AY 2023-2024", "AY 2024-2025"];
-  // const coursesWithImages = [
-  //   { name: "CBSE 9 Science", image: "/images/science.png" },
-  //   { name: "CBSE 9 Math", image: "/images/math.png" },
-  //   { name: "CBSE 9 English", image: "/images/english.png" },
-  // ];
+  const coursesWithImages = [
+    { name: "CBSE 9 Science", image: "/images/science.png" },
+    { name: "CBSE 9 Math", image: "/images/math.png" },
+    { name: "CBSE 9 English", image: "/images/english.png" },
+  ];
 
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: name === "status" ? value === "true" : value });
   };
-
- 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const res = await fetch("/api/students", {
-
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -63,8 +61,7 @@ const AddStudent = () => {
             required
           />
         </div>
-      
-        {/* Cohort */}
+
         <div className="mb-4">
           <label className="block text-gray-700">Cohort</label>
           <select
@@ -82,17 +79,23 @@ const AddStudent = () => {
           </select>
         </div>
 
-        
         <div className="mb-4">
           <label className="block text-gray-700">Course</label>
-          <input
-            type="text"
+          <select
             name="course"
             className="w-full border p-2 rounded"
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">Select Course</option>
+            {coursesWithImages.map((course) => (
+              <option key={course.name} value={course.name}>
+                {course.name}
+              </option>
+            ))}
+          </select>
         </div>
+
         <div className="mb-4">
           <label className="block text-gray-700">Date Joined</label>
           <input
@@ -103,6 +106,7 @@ const AddStudent = () => {
             required
           />
         </div>
+
         <div className="mb-4">
           <label className="block text-gray-700">Last Login</label>
           <input
@@ -113,13 +117,19 @@ const AddStudent = () => {
             required
           />
         </div>
+
         <div className="mb-4">
           <label className="block text-gray-700">Status</label>
-          <select name="status" className="w-full border p-2 rounded" onChange={handleChange}>
+          <select
+            name="status"
+            className="w-full border p-2 rounded"
+            onChange={handleChange}
+          >
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </select>
         </div>
+
         <button className="bg-blue-500 text-white px-4 py-2 rounded w-full">
           Add Student
         </button>

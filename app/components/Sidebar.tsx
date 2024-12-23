@@ -10,7 +10,7 @@ import { BiSolidLeaf } from "react-icons/bi";
 const menuItems = [
   { name: 'Dashboard', icon:<RiDashboard3Line />, path: '/dashboard' },
   { name: 'Students', icon: <RiBookReadFill />, path: '/students', active: true },
-  { name: 'Chapter', icon: <LuBookMarked />, path: '/chapter' },
+  { name: 'Chapter', icon: <LuBookMarked />, path: '/chapters' },
   { name: 'Help', icon: <MdHelpOutline />, path: '/help' },
   { name: 'Reports', icon: <AiOutlinePieChart />, path: '/reports' },
   { name: 'Settings', icon: <RiSettingsLine />, path: '/settings' },
