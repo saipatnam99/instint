@@ -17,7 +17,7 @@ const EditStudent = () => {
   });
 
   const cohorts = ["AY 2022-2023", "AY 2023-2024", "AY 2024-2025"];
-  const courses = ["CBSE 9 MATHS", "CBSE 9 SCIENCE","CBSE 8 MATHS", "CBSE 8 SCIENCE"]; // Example course list
+  const courses = ["CBSE 9 MATHS", "CBSE 9 SCIENCE", "CBSE 8 MATHS", "CBSE 8 SCIENCE"]; // Example course list
 
   useEffect(() => {
     if (id) {
@@ -32,7 +32,9 @@ const EditStudent = () => {
           alert("Error fetching student data");
           return;
         }
-        setForm(data);
+        if (data) {
+          setForm(data);
+        }
       };
       fetchStudentData();
     }
@@ -46,7 +48,7 @@ const EditStudent = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("students")
       .update({
         name: form.name,

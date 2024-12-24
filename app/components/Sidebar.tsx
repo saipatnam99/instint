@@ -27,9 +27,7 @@ const Sidebar = () => {
       <BiSolidLeaf className="text-black text-3xl" />
       <span className="text-lg font-bold text-black">Quyl.</span>
     </div>
-      {/* <div className="p-6 flex items-center space-x-2">
-        <span className="text-2xl font-bold text-black">Quyl.</span>
-      </div> */}
+     
 
       {/* Menu Items */}
       <nav className="mt-4">

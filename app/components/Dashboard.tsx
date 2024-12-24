@@ -6,6 +6,7 @@ import { MdHelpOutline } from "react-icons/md";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { LuMessageSquareMore, LuSettings2 } from "react-icons/lu";
 import swal from "sweetalert";
+import Image from "next/image";
 
 interface Student {
   id: number;
@@ -19,7 +20,6 @@ interface Student {
 
 const StudentDashboard = () => {
   const router = useRouter();
-  const [students, setStudents] = useState<Student[]>([]);
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([]);
   const [selectedCohort, setSelectedCohort] = useState<string>("");
   const [selectedCourse, setSelectedCourse] = useState<string>("");
@@ -28,10 +28,13 @@ const StudentDashboard = () => {
   // Fetch students data from API
   useEffect(() => {
     const fetchStudents = async () => {
-      const res = await fetch("/api/students");
-      const data = await res.json();
-      setStudents(data);
-      setFilteredStudents(data); // Initially set all students
+      try {
+        const res = await fetch("/api/students");
+        const data = await res.json();
+        setFilteredStudents(data); // Set all students initially
+      } catch {
+        swal("Error!", "Failed to fetch student data.", "error");
+      }
     };
     fetchStudents();
   }, []);
@@ -42,15 +45,14 @@ const StudentDashboard = () => {
       title: "Edit Student",
       text: `Do you want to edit details for ${student.name}?`,
       icon: "info",
-
     }).then((willEdit) => {
       if (willEdit) {
         router.push(`/editStudent/${student.id}`);
       }
     });
   };
-  
-  //handle delete
+
+  // Handle delete
   const handleDelete = async (student: Student, event: React.MouseEvent) => {
     event.preventDefault(); // Prevent context menu
     const confirmDelete = await swal({
@@ -60,37 +62,33 @@ const StudentDashboard = () => {
       buttons: ["Cancel", "Delete"],
       dangerMode: true,
     });
-  
+
     if (confirmDelete) {
       try {
-        // API call to delete the student
         const response = await fetch(`/api/students?id=${student.id}`, {
           method: "DELETE",
         });
-  
+
         if (response.ok) {
           swal("Deleted!", `${student.name} has been deleted.`, "success");
-  
+
           // Update the students state to remove the deleted student
-          setStudents((prevStudents) =>
-            prevStudents.filter((s) => s.id !== student.id)
-          );
           setFilteredStudents((prevStudents) =>
             prevStudents.filter((s) => s.id !== student.id)
           );
         } else {
           const errorData = await response.json();
-          swal("Error!", errorData.message || "Failed to delete student.", "error");
+          swal(
+            "Error!",
+            errorData.message || "Failed to delete student.",
+            "error"
+          );
         }
-      } catch (error) {
+      } catch {
         swal("Error!", "Something went wrong while deleting the student.", "error");
       }
     }
   };
-  
-  
-  
-  
 
   return (
     <div className="flex h-screen">
@@ -101,10 +99,11 @@ const StudentDashboard = () => {
           <input
             type="text"
             placeholder="Search your course or student"
-            className="border p-2 rounded w-1/3"
+            className="border p-2 rounded w-1/2"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+          
           <div className="flex items-center space-x-4">
             <div className="p-2 flex space-x-8 items-center">
               <MdHelpOutline className="w-6 h-6 text-gray-600" />
@@ -113,10 +112,12 @@ const StudentDashboard = () => {
               <IoIosNotificationsOutline className="w-6 h-6 text-gray-600" />
             </div>
             <div className="flex items-center space-x-2">
-              <img
+              <Image
                 src="/profile.avif"
                 alt="Profile"
-                className="w-8 h-8 rounded-full object-cover"
+                width={32}
+                height={32}
+                className="rounded-full object-cover"
               />
               <span className="font-medium text-gray-700">Adeline H. Dancy</span>
             </div>
